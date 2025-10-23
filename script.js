@@ -26,10 +26,10 @@ let lastScroll = 0;
 window.addEventListener('scroll', function() {
   const navbar = document.querySelector('.navbar');
   const currentScroll = window.scrollY;
-  
+
   if (currentScroll > 50) navbar.classList.add('scrolled');
   else navbar.classList.remove('scrolled');
-  
+
   lastScroll = currentScroll;
 });
 
@@ -47,15 +47,6 @@ scrollTopBtn?.addEventListener('click', function() {
 // Show More Sponsors
 document.getElementById('showMoreSponsors')?.addEventListener('click', () => {
   alert('More sponsors coming soon!');
-});
-
-// Smooth scroll for all internal links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
 });
 
 // Card hover effect
@@ -137,17 +128,31 @@ testimonials.forEach(t => {
   testimonialObserver.observe(t);
 });
 
-// Auto-close navbar on mobile
+// ========================================
+// ✅ (تم التعديل) Auto-close navbar on mobile
+// ========================================
 const navLinks = document.querySelectorAll('.nav-link');
 const navbarCollapse = document.querySelector('.navbar-collapse');
 navLinks.forEach(link => {
-  link.addEventListener('click', () => {
+  // استخدمنا function() بدل () => عشان نقدر نستخدم 'this'
+  link.addEventListener('click', function() { 
+    
+    // 💡 التعديل: لو اللينك ده بيفتح قايمة منسدلة، متعملش حاجة
+    if (this.hasAttribute('data-bs-toggle') && this.getAttribute('data-bs-toggle') === 'dropdown') {
+      return; // اخرج ومتكملش الكود
+    }
+
+    // لو هو لينك عادي (مش بيفتح قايمة)، اقفل النافبار
     if (window.innerWidth < 992 && navbarCollapse?.classList.contains('show')) {
       const bsCollapse = new bootstrap.Collapse(navbarCollapse);
       bsCollapse.hide();
     }
   });
 });
+// ========================================
+// (انتهاء التعديل)
+// ========================================
+
 
 // Section reveal animations
 const sections = document.querySelectorAll('section');
@@ -346,8 +351,7 @@ programmingForm?.addEventListener('submit', async function(e) {
   }
 });
 
-/* 
-✅ Firebase Example (Placeholder)
+/* ✅ Firebase Example (Placeholder)
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 const firebaseConfig = { ... };
